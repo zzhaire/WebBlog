@@ -1,0 +1,47 @@
+{# user_register.html文件#}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <link href="/static/css/reglogin.css" rel='stylesheet' type='text/css'/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<div class="main">
+    <div class="header">
+        <h1>注册一个用户!</h1>
+    </div>
+    <p></p>
+    <form action="#" method="post">
+        {% csrf_token %}
+        <ul class="left-form">
+            <h2>注册:</h2>
+            {# 第一个表单 #}
+            <li>
+                <input type="text" placeholder="请输入您的邮箱" name="email"/>
+                <div class="clear"></div>
+            </li>
+            <div style ='color:red'>{{ error_tips.email.errors.0 }}</div>
+            {# 第二个表单 #}
+            <li>
+                <input type="password" placeholder="请输入密码"
+                       name="password"/>
+                <div class="clear"></div>
+            </li>
+            <div style ='color:red'>{{ error_tips.password.errors.0 }}</div>
+            {# 第三个表单 #}
+            <li>
+                <input type="text" placeholder="请输入您的昵称"
+                       name="nick_name"/>
+                <div class="clear"></div>
+            </li>
+            <div style ='color:red'>{{ error_tips.nick_name.errors.0 }}</div>
+            <input type="submit" value="注册">
+            <div class="clear"></div>
+        </ul>
+        <div class="clear"></div>
+    </form>
+    <h3 style="width:200px;height: 30px;margin:auto;color :red;text-align: center"> {{ msg }}</h3>
+</div>
+</body>
+</html>

@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    <title>搜索</title>
+{% endblock %}
+
+{% block content %}
+    <div class="content">
+        <div class="title">
+            <h3 style="line-height: 1.3">搜索到相关内容如下：</h3>
+        </div>
+        {% for blog in now_page.object_list %}
+            <article class="excerpt excerpt-{{ forloop.counter }}">
+                <a class="focus" href="{% url 'blog_detail' blog.id %}"
+                   title="{{ blog.title }}" target="_blank">
+                    <img class="thumb" data-original="{{ MEDIA_URL }}{{ blog.cover }}"
+                    src="{% static 'media/' %}{{ MEDIA_URL }}{{ blog.cover }}" alt="{{ blog.title }}"
+                    style="display: inline;">
+                </a>
+                <header>
+                    <a class="cat" href="{% url 'blog_list' blog.category.name %}"
+                           title="{{ blog.category.name }}">{{ blog.category.name }}<i></i>
+                    </a>
+                    <h2><a href="{% url 'blog_detail' blog.id %}" title="{{ blog.title }}"
+                           target="_blank">{{ blog.title }}</a></h2>
+                </header>
+                <p class="meta">
+                    <time class="time"><i class="glyphicon glyphicon-time"></i> {{ blog.add_time }}</time>
+                    <span class="views"><i class="glyphicon glyphicon-eye-open"></i>{{ blog.click_num }}</span>
+                    {# 评论数 #}
+                    <a class="comment" title="评论">
+                        <i class="glyphicon glyphicon-comment"></i> {{ blog.message_num }}
+                    </a>
+                </p>
+                <p class="note">{{ blog.introduce }}</p>
+            </article>
+        {% endfor %}
+        {% include 'pagenation.html' %}
+    </div>
+{% endblock %}

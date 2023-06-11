@@ -1,0 +1,218 @@
+{% load static %}
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    <meta name="360-site-verification" content="85326d9c1b0d512826605334e6eb1d5c">
+    <meta charset="utf-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="baidu_union_verify" content="6c3c4420bcc5cb0d05563cc88180cd88">
+    {% block title %}{% endblock %}
+    <meta name="keywords" content="Django博客">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/nprogress.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/shang.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/fontawesome.min.css' %}">
+    <link rel="apple-touch-icon-precomposed" href="{% static 'images/icon.png' %}">
+    <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}">
+    <script src="{% static 'js/jquery-2.1.4.min.js' %}"></script>
+    <script src="{% static 'js/nprogress.js' %}"></script>
+    <script src="{% static 'js/jquery.lazyload.min.js' %}"></script>
+    {% block mycss %}{% endblock %}
+</head>
+<body class="user-select">
+<header class="header">
+    <nav class="navbar navbar-default" id="navbar">
+        <div class="container">
+            {# 头部最上层 #}
+            <div class="header-topbar hidden-xs link-border">
+                <ul class="site-nav topmenu">
+                    {# 如果用户是登录则显示名字#}
+                    {% if request.user.is_authenticated %}
+                        <li><a href="#">@{{ request.user.username }}</a>
+                        </li>
+                        <li><a href="{% url  'user_logout' %}" style="border-left: 1px solid black">退出</a></li>
+                        {# 如果未登录, 则显示登录或注册 #}
+                    {% else %}
+                        <li><a href="{% url 'user_login' %}">登录</a></li>
+                        <li><a href="{% url 'user_register' %}"
+                               style="border-left: 1px solid black">注册</a></li>
+                    {% endif %}
+                </ul>
+                人生苦短, 我用Python
+            </div>
+            {# 头部下面左 #}
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                        data-target="#header-navbar" aria-expanded="false">
+                    <span class="sr-only"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <h1 class="logo hvr-bounce-in">
+                    <a href="{% url 'index' %}" title="首页">
+                        <img src="{% static 'images/logo.png' %}" alt="首页">
+                    </a>
+                </h1>
+            </div>
+            {# 头部下面右 #}
+            <div class="collapse navbar-collapse" id="header-navbar">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a data-cont="首页" title="首页" href="{% url 'index' %}">首页
+                        </a>
+                    </li>
+                    {% for kind in all_category %}
+                        <li>
+                            <a data-cont="{{ kind.name }}" title="{{ kind.name }}"
+                               href="{% url 'blog_list' kind.name %}">{{ kind.name }}</a>
+                        </li>
+                    {% endfor %}
+
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+{# 中间区域, 轮播图+文章+标签等所有 #}
+<section class="container">
+    {# 左边部分 #}
+    <div class="content-wrap">
+        {# 中间文章的区域 #}
+        {% block content %}
+        {% endblock %}
+        <div class="widget widget_sentence">
+            <h3>标签云</h3>
+            <div class="widget-sentence-content">
+                <ul class="plinks ptags">
+                    {% for tag in all_tags %}
+                        <li>
+                            <a href="{% url 'blog_list' tag.category.name %}?tag={{ tag.id }}"
+                               title="{{ tag.name }}"
+                               draggable="false">{{ tag.name }}
+                                <span class="badge">{{ tag.bloginfo_set.count }}</span>
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+    {# 右边部分 #}
+    <aside class="sidebar">
+        <div class="fixed">
+            {# 统计区域, 只有主页才有 #}
+            {% block count_info %}
+            {% endblock %}
+            <div class="widget widget_search">
+                <form class="navbar-form" action="{% url 'blog_search' %}">
+                    <div class="input-group">
+                        <input type="text" name="keyword" class="form-control"
+                               size="35" placeholder="请输入关键字" maxlength="15"
+                               autocomplete="off">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default btn-search" type="submit">搜索</button>
+                        </span>
+                    </div>
+                </form>
+            </div>
+            {# 右下的标签云 #}
+            <div class="widget widget_sentence">
+                <h3>标签云</h3>
+                <div class="widget-sentence-content">
+                    <ul class="plinks ptags">
+                        {% for tag in all_tags %}
+                            <li>
+                                <a href="{% url 'blog_list' tag.category.name %}?tag={{ tag.id }}"
+                                   title="{{ tag.name }}"
+                                   draggable="false">{{ tag.name }}
+                                    <span class="badge">{{ tag.bloginfo_set.count }}</span>
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+        {# 热门推荐文章 #}
+        <div class="widget widget_hot">
+            <h3>热门推荐</h3>
+            <ul>
+                {% for blog in hot_blogs %}
+                    <li>
+                        <a title="{{ blog.title }}" href="{% url 'blog_detail' blog.id %}" target="_blank">
+                        <span class="thumbnail">
+                            {# 文章的图片 #}
+                            <img class="thumb" data-original="{% static 'media/' %}{{ blog.cover }}"
+                                 src="{% static 'media/' %}{{ blog.cover }}" alt="{{ blog.title }}"
+                                 style="display: block;">
+                        </span>
+                            {# 文章的名字 #}
+                            <span class="text">{{ blog.title }}</span>
+                            <span class="muted">
+                        <i class="glyphicon glyphicon-time"></i>
+                            {{ blog.add_time }}{# 文章的发布时间 #}
+                        </span>
+                            <span class="muted">
+                        <i class="glyphicon glyphicon-eye-open"></i>{{ blog.click_num }} {# 文章的观看数 #}
+                        </span>
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {# 广告区域 #}
+        <div class="widget widget_sentence">
+            <a href="https://www.aliyun.com" rel="nofollow" title="阿里云"
+               target="_blank">
+                <img style="width: 100%" src="{% static 'images/阿里云.jpeg' %}" alt="阿里云"></a>
+        </div>
+        <div class="widget widget_sentence">
+            <a href="https://cloud.tencent.com/" rel="nofollow" title="腾讯云" target="_blank">
+                <img style="width: 100%" src="{% static 'images/腾讯云.jpg' %}" alt="腾讯云"></a>
+        </div>
+        <div class="widget widget_sentence">
+            <h3>友情链接</h3>
+            <div class="widget-sentence-link">
+                <a href="https://www.python.org/" title="Python">Python官网
+                </a>
+                <a href="https://docs.djangoproject.com/zh-hans/3.2/"
+                   title="Django官网">Django官网</a>
+                <a href="https://github.com/" title="github">github</a>
+            </div>
+        </div>
+    </aside>
+    {# 向上的按钮 #}
+    <ul class="sidebar">
+        <li class="totop"></li>
+    </ul>
+</section>
+{# 底部信息 #}
+<footer class="footer">
+    <div class="container">
+        <p>
+            Copyright &copy; 2023.知吾所想 予吾所好-Zhaire
+        </p>
+    </div>
+    <div id="gotop"><a class="gotop"></a></div>
+</footer>
+
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+<script src="{% static 'js/jquery.ias.js' %}"></script>
+<script src="{% static 'js/scripts.js' %}"></script>
+<script>
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?e8ae61fbc1aa8b44823aae4cd23690b0";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+{# 预留js的继承 TODO #}
+{% block myjs %}{% endblock %}
+</body>
+</html>

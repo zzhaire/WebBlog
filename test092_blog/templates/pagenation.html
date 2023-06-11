@@ -1,0 +1,46 @@
+{# 分页器 #}
+<nav style="text-align: center">
+    <ul class="pagination">
+        {% if now_page.has_previous %} {# 如果有上一页才可以点击<< #}
+            <li class="previous">
+                {# 此处相对下面加了a标签, 可以点击 #}
+                <a href="?{{ now_page.previous_page_number.querystring }}">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+        {% else %} {# 否则禁止点击上一页 #}
+            <li class="previous disabled">
+                <span aria-hidden="true">&laquo;</span>
+            </li>
+        {% endif %}
+        {% for page in now_page.pages %}{# 遍历所有页数 #}
+            {% if page %}
+                {# 如果遍历到的数字和当前页相同, 则添加active, 高度 #}
+                {% ifequal page now_page.number %}
+                    <li class="active"><a href="javascript:;">{{ page }}</a>
+                    </li>
+                {% else %}
+                    <li><a href="?{{ page.querystring }}" class="page">{{page }}</a></li>
+                {% endifequal %}
+            {% else %}
+                <li class="disabled">
+                    <span>
+                        ...
+                    </span>
+                </li>
+            {% endif %}
+        {% endfor %}
+        {% if now_page.has_next %}{# 如果有下一页才可以点击>> #}
+            <li class="next">
+                {# 此处相对下面加了a标签, 可以点击 #}
+                <a href="?{{ now_page.next_page_number.querystring }}">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        {% else %}
+            <li class="next disabled">
+                <span aria-hidden="true">&raquo;</span>
+            </li>
+        {% endif %}
+    </ul>
+</nav>
