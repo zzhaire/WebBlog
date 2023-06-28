@@ -2,7 +2,7 @@
 
 使用django搭建的博客系统,具有富文本编辑功能和评论功能
 
-
+【博客演示视频】 https://www.bilibili.com/video/BV1XX4y1p7kt/?share_source=copy_web&vd_source=ffec7b7c1c2dc2b525e0362c2befce9d
 
 说明:
 
